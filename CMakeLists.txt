@@ -3,6 +3,7 @@ cmake_minimum_required (VERSION 3.14)
 project (template-project ASM C CXX)
 set(EXECUTABLE ${PROJECT_NAME}.elf)
 set(STLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/deps/ST-LIB)
+set(BMSLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/deps/BMS-LIB)
 
 option(USE_ETHERNET "Enable ethernet peripheral" OFF)
 option(TARGET_NUCLEO "Targets the STM32H723 Nucleo development board" OFF)
@@ -22,6 +23,7 @@ if (PROJECT_IS_TOP_LEVEL AND (NOT CMAKE_CROSSCOMPILING))
 endif()
 
 add_subdirectory(${STLIB_DIR})
+add_subdirectory(${BMSLIB_DIR})
 
 set(HAL_HEADER 
   ${CMAKE_SOURCE_DIR}/Core/Inc/main.h
@@ -66,6 +68,7 @@ ${SOURCE_CPP}
 
 target_link_libraries(${EXECUTABLE} PRIVATE 
   st-lib
+  bms-lib
   $<$<NOT:$<BOOL:${CMAKE_CROSSCOMPILING}>>:GTest::gtest_main>
 )
 
@@ -133,6 +136,11 @@ target_include_directories(${EXECUTABLE} PRIVATE
   ${STLIB_DIR}/Inc
   ${STLIB_DIR}/Inc/ST-LIB_LOW
   ${STLIB_DIR}/Inc/ST-LIB_HIGH
+
+  #BMS-LIB
+  ${BMSLIB_DIR}
+  ${BMSLIB_DIR}/Inc
+  ${BMSLIB_DIR}/Inc/Models
 )
 
 target_link_options(${EXECUTABLE} PRIVATE 
