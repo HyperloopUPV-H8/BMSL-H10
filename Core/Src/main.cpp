@@ -5,19 +5,19 @@
 #endif
 
 #include "ST-LIB.hpp"
+#include "BMSL.hpp"
 
 int main(void) {
-#ifdef SIM_ON
-    SharedMemory::start();
-#endif
 
-    DigitalOutput led_on(PA1);
-    STLIB::start();
 
-    Time::register_low_precision_alarm(100, [&]() { led_on.toggle(); });
+    BMSL bmsl;
+    STLIB::start("192.168.0.7");
+    bmsl.init();
+
 
     while (1) {
         STLIB::update();
+        bmsl.update();
     }
 }
 
