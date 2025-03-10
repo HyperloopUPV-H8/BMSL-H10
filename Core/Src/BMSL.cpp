@@ -3,11 +3,12 @@ uint8_t* BMSL::BMSL_state;
 BMSL::BMSL(){
     state_machine = new BMSL_SM();
     BMSL_state = &state_machine->BMSL_SM_State_Machine.current_state;
+    Data::init();
 }
 
-void BMSL::init(){
-    Data::init();
-    Comms::start();
+void BMSL::start(){
+    Data::start();
+    Comms::init();
 }
 
 void BMSL::update(){

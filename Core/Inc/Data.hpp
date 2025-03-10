@@ -14,6 +14,7 @@ class Data{
         static float* total_voltage;
 
         static void init();
+        static void start();
         static void read();
 
         static float* low_battery_temperature_1;

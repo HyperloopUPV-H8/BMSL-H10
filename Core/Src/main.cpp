@@ -12,7 +12,7 @@ int main(void) {
 
     BMSL bmsl;
     STLIB::start("192.168.1.254");
-    bmsl.init();
+    bmsl.start();
 
 
     while (1) {

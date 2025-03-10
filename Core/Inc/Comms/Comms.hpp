@@ -34,7 +34,7 @@ class Comms {
 
     // -----------------Functions-----------------
 
-    static void start();
+    static void init();
     static void add_packets();
     static void send_packets();
 };

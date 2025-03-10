@@ -16,7 +16,7 @@ class BMSL{
 
     BMSL();
 
-    void init();
+    void start();
     void update();
 
 };
