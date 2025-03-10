@@ -17,7 +17,7 @@ class Comms {
     static const uint16_t CONTROL_STATION_PORT = 50500;
     static const uint16_t CONTROL_STATION_UDP_PORT = 50400;
     static constexpr std::string CONTROL_SATION_IP = "192.168.0.9";
-    static constexpr std::string BMSL_IP = "192.168.0.7";
+    static constexpr std::string BMSL_IP = "192.168.1.254";
 
 
     // -----------------Sockets-----------------

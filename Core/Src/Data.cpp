@@ -54,7 +54,5 @@ void Data::read(){
         bmsl->read_internal_temperature();
     }
 
-    for (auto& adc : bmsl->external_adcs){
-        adc.battery.update_data();
-    }
+    bmsl->external_adcs[0].battery.update_data();
 }
