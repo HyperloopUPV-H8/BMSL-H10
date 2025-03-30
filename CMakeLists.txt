@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.14)
 
-project (template-project ASM C CXX)
+project (BMSL ASM C CXX)
 set(EXECUTABLE ${PROJECT_NAME}.elf)
 set(STLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/deps/ST-LIB)
 set(BMSLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/deps/BMS-LIB)
@@ -22,8 +22,13 @@ if (PROJECT_IS_TOP_LEVEL AND (NOT CMAKE_CROSSCOMPILING))
   target_link_libraries(GTest::GTest INTERFACE gtest_main)
 endif()
 
+message("About to configure ST-LIB for BMSL")
 add_subdirectory(${STLIB_DIR})
+message("ST-LIB configured for BMSL")
+
+message("About to configure BMS-LIB for BMSL")
 add_subdirectory(${BMSLIB_DIR})
+message("BMS-LIB configured for BMSL")
 
 set(HAL_HEADER 
   ${CMAKE_SOURCE_DIR}/Core/Inc/main.h
@@ -110,6 +115,8 @@ target_compile_options(${EXECUTABLE} PRIVATE
 # REMEMBER TO CHANGE `.vscode/C_cpp_properties.json` TO MATCH THIS LIST
 target_include_directories(${EXECUTABLE} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
+
+  # ST-LIB
   $<$<BOOL:${CMAKE_CROSSCOMPILING}>:${STLIB_DIR}/Drivers/CMSIS/Device/ST/STM32H7xx/Include>
   $<$<BOOL:${CMAKE_CROSSCOMPILING}>:${STLIB_DIR}/Drivers/CMSIS/Include>
   $<$<BOOL:${CMAKE_CROSSCOMPILING}>:${STLIB_DIR}/Drivers/STM32H7xx_HAL_Driver/Inc>
