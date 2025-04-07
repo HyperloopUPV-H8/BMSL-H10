@@ -14,6 +14,9 @@ class Data{
     static float* minimum_cell_voltage;
     static float* total_voltage;
 
+    static bool* balancing;
+    static float* SOC;
+
     static void init();
     static void start();
     static void read();

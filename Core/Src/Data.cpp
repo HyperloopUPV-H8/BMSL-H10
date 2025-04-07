@@ -9,6 +9,9 @@ float* Data::maximum_cell_voltage{};
 float* Data::minimum_cell_voltage{};
 float* Data::total_voltage{};
 
+bool* Data::balancing{};
+float* Data::SOC{};
+
 BMSH* Data::bmsl;
 
 void Data::init() {
@@ -17,6 +20,9 @@ void Data::init() {
     maximum_cell_voltage = new float;
     minimum_cell_voltage = new float;
     total_voltage = new float;
+
+    balancing = new bool;
+    SOC = new float;
 
     bmsl = new BMSH(SPI::spi3);
 }
@@ -34,6 +40,9 @@ void Data::start() {
         maximum_cell_voltage = &bmsl->external_adcs[0].battery.maximum_cell;
         minimum_cell_voltage = &bmsl->external_adcs[0].battery.minimum_cell;
         total_voltage = &bmsl->external_adcs[0].battery.total_voltage;
+
+        balancing = &bmsl->external_adcs[0].battery.is_balancing;
+        SOC = &bmsl->external_adcs[0].battery.SOC;
     }
 
 }
