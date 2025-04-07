@@ -8,8 +8,7 @@ class Comms {
 
     enum class IDPacket : uint16_t {
         VOLTAGE = 777,
-        TEMPERATURE = 778,
-        STATE = 779
+        STATE = 778
     };
 
 
