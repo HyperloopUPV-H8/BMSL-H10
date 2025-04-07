@@ -3,7 +3,6 @@
 #include "BMSL.hpp"
 
 HeapPacket* Comms::voltage_data{};
-HeapPacket* Comms::temperature_data{};
 HeapPacket* Comms::current_state{};
 
 ServerSocket* Comms::control_station = nullptr;
@@ -29,12 +28,6 @@ void Comms::add_packets(){
         Data::total_voltage);
     }
 
-    if (Data::enableTemperatureRead){
-        temperature_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::TEMPERATURE),
-        Data::low_battery_temperature_1,
-        Data::low_battery_temperature_2);
-    }
-
     current_state = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::STATE), BMSL::BMSL_state);
 }
 
@@ -42,10 +35,5 @@ void Comms::send_packets(){
     if (Data::enableVoltageRead){
         control_station_udp->send_packet(*voltage_data);
     }
-
-    if (Data::enableTemperatureRead){
-        control_station_udp->send_packet(*temperature_data);
-    }
-
     control_station_udp->send_packet(*current_state);
 }

@@ -30,7 +30,6 @@ class Comms {
     // -----------------Packets-----------------
 
     static HeapPacket* voltage_data;
-    static HeapPacket* temperature_data;
     static HeapPacket* current_state;
 
 

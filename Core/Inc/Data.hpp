@@ -14,15 +14,11 @@ class Data{
     static float* minimum_cell_voltage;
     static float* total_voltage;
 
-    static float* low_battery_temperature_1;
-    static float* low_battery_temperature_2;
-
     static void init();
     static void start();
     static void read();
 
     static bool enableVoltageRead;
-    static bool enableTemperatureRead;
 
     static BMSH* bmsl;
 
