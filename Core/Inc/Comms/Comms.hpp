@@ -8,7 +8,8 @@ class Comms {
 
     enum class IDPacket : uint16_t {
         VOLTAGE = 777,
-        STATE = 778
+        TEMPERATURE = 778,
+        STATE = 779
     };
 
 
@@ -28,7 +29,8 @@ class Comms {
 
     // -----------------Packets-----------------
 
-    static HeapPacket* battery_data;
+    static HeapPacket* voltage_data;
+    static HeapPacket* temperature_data;
     static HeapPacket* current_state;
 
 

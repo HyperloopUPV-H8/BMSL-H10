@@ -1,18 +1,25 @@
 #include "Data.hpp"
 #include "BMS-LIB.hpp"
 #include "BMSL.hpp"
+
 bool Data::enableVoltageRead{true};
-bool Data::enableTemperatureRead{false};
-float* Data::total_voltage;
-std::array<float*, 6> Data::cells;
-float* Data::low_battery_temperature_1;
-float* Data::low_battery_temperature_2;
+bool Data::enableTemperatureRead{true};
+
+std::array<float*, 6> Data::cells{};
+float* Data::maximum_cell_voltage{};
+float* Data::minimum_cell_voltage{};
+float* Data::total_voltage{};
+
+float* Data::low_battery_temperature_1{};
+float* Data::low_battery_temperature_2{};
 
 BMSH* Data::bmsl;
 
 void Data::init() {
     for (auto& cell : cells) cell = new float;
 
+    maximum_cell_voltage = new float;
+    minimum_cell_voltage = new float;
     total_voltage = new float;
 
     low_battery_temperature_1 = new float;
@@ -31,6 +38,8 @@ void Data::start() {
         cells[3] = bmsl->external_adcs[0].battery.cells[3];
         cells[4] = bmsl->external_adcs[0].battery.cells[4];
         cells[5] = bmsl->external_adcs[0].battery.cells[5];
+        maximum_cell_voltage = &bmsl->external_adcs[0].battery.maximum_cell;
+        minimum_cell_voltage = &bmsl->external_adcs[0].battery.minimum_cell;
         total_voltage = &bmsl->external_adcs[0].battery.total_voltage;
     }
 

@@ -1,8 +1,10 @@
 #include "Comms/Comms.hpp"
 #include "Data.hpp"
 #include "BMSL.hpp"
-HeapPacket* Comms::battery_data;
-HeapPacket* Comms::current_state;
+
+HeapPacket* Comms::voltage_data{};
+HeapPacket* Comms::temperature_data{};
+HeapPacket* Comms::current_state{};
 
 ServerSocket* Comms::control_station = nullptr;
 DatagramSocket* Comms::control_station_udp = nullptr;
@@ -14,11 +16,36 @@ void Comms::init() {
 }
 
 void Comms::add_packets(){
-    battery_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::VOLTAGE), Data::cells[0], Data::cells[1], Data::cells[2], Data::cells[3], Data::cells[4], Data::cells[5],Data::total_voltage);
+    if (Data::enableVoltageRead){
+        voltage_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::VOLTAGE),
+        Data::cells[0],
+        Data::cells[1],
+        Data::cells[2],
+        Data::cells[3],
+        Data::cells[4],
+        Data::cells[5],
+        Data::maximum_cell_voltage,
+        Data::minimum_cell_voltage,
+        Data::total_voltage);
+    }
+
+    if (Data::enableTemperatureRead){
+        temperature_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::TEMPERATURE),
+        Data::low_battery_temperature_1,
+        Data::low_battery_temperature_2);
+    }
+
     current_state = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::STATE), BMSL::BMSL_state);
 }
 
 void Comms::send_packets(){
-    control_station_udp->send_packet(*battery_data);
+    if (Data::enableVoltageRead){
+        control_station_udp->send_packet(*voltage_data);
+    }
+
+    if (Data::enableTemperatureRead){
+        control_station_udp->send_packet(*temperature_data);
+    }
+
     control_station_udp->send_packet(*current_state);
 }
