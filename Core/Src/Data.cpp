@@ -2,6 +2,9 @@
 #include "BMS-LIB.hpp"
 #include "BMSL.hpp"
 
+#define current_sensor_offset 0
+#define current_sensor_slope 1
+
 bool Data::enableVoltageRead{true};
 
 std::array<float*, 6> Data::cells{};
@@ -11,6 +14,12 @@ float* Data::total_voltage{};
 
 bool* Data::balancing{};
 float* Data::SOC{};
+
+LinearSensor<float>* Data::current_sensor{};
+float* Data::current{};
+
+DigitalOutput* Data::LED_Operational{};
+DigitalOutput* Data::LED_Fault{};
 
 BMSH* Data::bmsl;
 
@@ -23,6 +32,11 @@ void Data::init() {
 
     balancing = new bool;
     SOC = new float;
+
+    current = new float;
+
+    LED_Operational = new DigitalOutput(LED_OPERATIONAL);
+    LED_Fault = new DigitalOutput(LED_FAULT);
 
     bmsl = new BMSH(SPI::spi3);
 }
@@ -43,11 +57,18 @@ void Data::start() {
 
         balancing = &bmsl->external_adcs[0].battery.is_balancing;
         SOC = &bmsl->external_adcs[0].battery.SOC;
+
+        current_sensor = new LinearSensor<float> (CurrentSensor, current_sensor_slope, current_sensor_offset, current);
     }
 
 }
 
+void Data::read_temperature() {
+    current_sensor->read();
+}
+
 void Data::read() {
+    read_temperature();
     bmsl->wake_up();
 
     if (enableVoltageRead) {

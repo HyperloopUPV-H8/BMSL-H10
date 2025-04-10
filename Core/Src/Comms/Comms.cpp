@@ -27,7 +27,8 @@ void Comms::add_packets(){
         Data::minimum_cell_voltage,
         Data::total_voltage,
         Data::balancing,
-        Data::SOC);
+        Data::SOC,
+        Data::current);
     }
 
     current_state = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::STATE), BMSL::BMSL_state);

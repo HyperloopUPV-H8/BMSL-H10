@@ -2,6 +2,7 @@
 #define DATA_H
 
 #include "BMS-LIB.hpp"
+#include "BMSL_Pinout.hpp"
 
 
 class Data{
@@ -20,8 +21,14 @@ class Data{
     static void init();
     static void start();
     static void read();
+    static void read_temperature();
 
     static bool enableVoltageRead;
+
+    static LinearSensor<float>* current_sensor;
+    static float* current;
+    static DigitalOutput* LED_Operational;
+    static DigitalOutput* LED_Fault;
 
     static BMSH* bmsl;
 
