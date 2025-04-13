@@ -21,6 +21,7 @@
     "cstdlib": "cpp",
     "mutex": "cpp",
     "regex": "cpp",
-    "array": "cpp"
+    "array": "cpp",
+    "cstdint": "cpp"
   }
 }

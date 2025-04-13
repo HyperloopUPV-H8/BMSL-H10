@@ -5,12 +5,14 @@
 HeapPacket* Comms::voltage_data{};
 HeapPacket* Comms::current_state{};
 
-ServerSocket* Comms::control_station = nullptr;
+//ServerSocket* Comms::control_station = nullptr;
 DatagramSocket* Comms::control_station_udp = nullptr;
+Socket* Comms::HVSCU = nullptr;
 
 void Comms::init() {
-    control_station = new ServerSocket(IPV4(BMSL_IP), CONTROL_STATION_PORT,1000,500,10);
+    //control_station = new ServerSocket(IPV4(BMSL_IP), CONTROL_STATION_PORT,1000,500,10);
     control_station_udp = new DatagramSocket(IPV4(BMSL_IP), CONTROL_STATION_UDP_PORT,IPV4(CONTROL_SATION_IP), CONTROL_STATION_UDP_PORT);
+    HVSCU  = new Socket(IPV4(BMSL_IP), CLIENT_PORT, IPV4(HVSCU_IP), HVSCU_PORT);
     add_packets();
 }
 

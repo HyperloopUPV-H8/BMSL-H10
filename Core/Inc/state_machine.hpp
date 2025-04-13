@@ -12,10 +12,12 @@ class BMSL_SM{
     public:
 
     static bool connecting_to_operational(){
-        return Comms::control_station->is_connected();
+        //return Comms::control_station->is_connected();
+        return Comms::HVSCU->is_connected();
     }
     static bool operational_to_fault(){
-        return !Comms::control_station->is_connected();
+        //return !Comms::control_station->is_connected();
+        return !Comms::HVSCU->is_connected();
     }
 
     // ------BATTERY READING------
