@@ -26,9 +26,9 @@ class Comms {
 
     // -----------------Sockets-----------------
 
-    //static ServerSocket* control_station;
+    static ServerSocket* control_station;
     static DatagramSocket* control_station_udp;
-    static Socket* HVSCU;
+    //static Socket* HVSCU;
 
 
     // -----------------Packets-----------------

@@ -12,12 +12,12 @@ class BMSL_SM{
     public:
 
     static bool connecting_to_operational(){
-        //return Comms::control_station->is_connected();
-        return Comms::HVSCU->is_connected();
+        return Comms::control_station->is_connected();
+        //return Comms::HVSCU->is_connected();
     }
     static bool operational_to_fault(){
-        //return !Comms::control_station->is_connected();
-        return !Comms::HVSCU->is_connected();
+        return !Comms::control_station->is_connected();
+        //return !Comms::HVSCU->is_connected();
     }
 
     // ------BATTERY READING------
@@ -78,7 +78,9 @@ class BMSL_SM{
 
         BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, BMSL_SMStates::FAULT);
         BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, BMSL_SMStates::FAULT);
-        BMSL_SM_State_Machine.add_enter_action([&](){ Data::LED_Fault->turn_on(); }, BMSL_SMStates::FAULT);
+        BMSL_SM_State_Machine.add_enter_action([&](){
+             Data::LED_Fault->turn_on();
+             }, BMSL_SMStates::FAULT);
         BMSL_SM_State_Machine.add_exit_action([&](){ Data::LED_Fault->turn_off(); }, BMSL_SMStates::FAULT);
 
     }
