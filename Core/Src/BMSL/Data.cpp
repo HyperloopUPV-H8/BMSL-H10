@@ -1,6 +1,6 @@
-#include "Data.hpp"
+#include "BMSL/Data.hpp"
+#include "BMSL/BMSL.hpp"
 #include "BMS-LIB.hpp"
-#include "BMSL.hpp"
 
 #define current_sensor_offset 0
 #define current_sensor_slope 1

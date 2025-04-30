@@ -5,7 +5,7 @@
 #endif
 
 #include "ST-LIB.hpp"
-#include "BMSL.hpp"
+#include "BMSL/BMSL.hpp"
 
 int main(void) {
 

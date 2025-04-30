@@ -1,6 +1,6 @@
-#include "Comms/Comms.hpp"
-#include "Data.hpp"
-#include "BMSL.hpp"
+#include "BMSL/Comms.hpp"
+#include "BMSL/Data.hpp"
+#include "BMSL/BMSL.hpp"
 
 HeapPacket* Comms::voltage_data{};
 HeapPacket* Comms::current_state{};

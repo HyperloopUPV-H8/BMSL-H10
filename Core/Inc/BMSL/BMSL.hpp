@@ -5,7 +5,7 @@
 #include "BMS-LIB.hpp"
 #include "state_machine.hpp"
 #include "Data.hpp"
-#include "Comms/Comms.hpp"
+#include "Comms.hpp"
 
 class BMSL{
 
