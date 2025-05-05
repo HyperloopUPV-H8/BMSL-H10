@@ -33,8 +33,6 @@ class DCLV {
         static uint32_t dead_time;
 
         static void init();
-        static void toggle_buffer();
-        static void toggle_reset();
         static void turn_on_pfm();
         static void turn_off_pfm();
         static void set_pfm_frequency(uint32_t freq);

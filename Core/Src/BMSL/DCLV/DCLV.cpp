@@ -24,24 +24,6 @@ void DCLV::init() {
     buffer_state = BUFFER_STATES::HIGH;
 }
 
-/* void DCLV::toggle_buffer() {
-    buffer_en->toggle();
-    if (buffer_state == BUFFER_STATES::HIGH) {
-        buffer_state = BUFFER_STATES::LOW;
-    } else {
-        buffer_state = BUFFER_STATES::HIGH;
-    }
-}
-
-void DCLV::toggle_reset() {
-    reset->toggle();
-    if (reset_state == RESET_STATES::HIGH) {
-        reset_state = RESET_STATES::LOW;
-    } else {
-        reset_state = RESET_STATES::HIGH;
-    }
-} */
-
 void DCLV::turn_on_pfm() {
     buffer_en->turn_off();
     buffer_state = BUFFER_STATES::LOW;
