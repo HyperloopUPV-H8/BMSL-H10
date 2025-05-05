@@ -6,18 +6,19 @@
 #include "state_machine.hpp"
 #include "Data.hpp"
 #include "Comms.hpp"
+#include "DCLV/DCLV.hpp"
 
 class BMSL{
 
     public:
 
-    BMSL_SM* state_machine;
+    static BMSL_SM* state_machine;
     static uint8_t* BMSL_state;
 
-    BMSL();
-
-    void start();
-    void update();
+    
+    static void init();
+    static void start();
+    static void update();
 
 };
 

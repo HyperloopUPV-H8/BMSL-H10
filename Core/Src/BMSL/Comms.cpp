@@ -1,44 +1,87 @@
 #include "BMSL/Comms.hpp"
 #include "BMSL/Data.hpp"
 #include "BMSL/BMSL.hpp"
+#include "BMSL/DCLV/DCLV.hpp"
 
-HeapPacket* Comms::voltage_data{};
+HeapPacket* Comms::battery_data{};
 HeapPacket* Comms::current_state{};
+HeapPacket* Comms::dclv_data{};
+
+HeapOrder* Comms::turn_on_pfm{};
+HeapOrder* Comms::turn_off_pfm{};
+HeapOrder* Comms::set_pfm_frequency{};
+HeapOrder* Comms::set_pfm_dead_time{};
 
 ServerSocket* Comms::control_station = nullptr;
 DatagramSocket* Comms::control_station_udp = nullptr;
 //Socket* Comms::HVSCU = nullptr;
+
+bool Comms::received_turn_on_pfm{false};
+bool Comms::received_turn_off_pfm{false};
+bool Comms::received_set_pfm_frequency{false};
+bool Comms::received_set_pfm_dead_time{false};
+
+// Callbacks
+void Comms::turn_on_pfm_callback() {
+    received_turn_on_pfm = true;
+}
+void Comms::turn_off_pfm_callback() {
+    received_turn_off_pfm = true;
+}
+void Comms::set_pfm_frequency_callback() {
+    received_set_pfm_frequency = true;
+}
+void Comms::set_pfm_dead_time_callback() {
+    received_set_pfm_dead_time = true;
+}
 
 void Comms::init() {
     control_station = new ServerSocket(IPV4(BMSL_IP), CONTROL_STATION_PORT,1000,500,10);
     control_station_udp = new DatagramSocket(IPV4(BMSL_IP), CONTROL_STATION_UDP_PORT,IPV4(CONTROL_SATION_IP), CONTROL_STATION_UDP_PORT);
     //HVSCU  = new Socket(IPV4(BMSL_IP), CLIENT_PORT, IPV4(HVSCU_IP), HVSCU_PORT,false);
     add_packets();
+    add_orders();
 }
 
 void Comms::add_packets(){
     if (Data::enableVoltageRead){
-        voltage_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::VOLTAGE),
-        Data::cells[0],
-        Data::cells[1],
-        Data::cells[2],
-        Data::cells[3],
-        Data::cells[4],
-        Data::cells[5],
-        Data::maximum_cell_voltage,
-        Data::minimum_cell_voltage,
-        Data::total_voltage,
-        Data::balancing,
-        Data::SOC,
-        Data::current);
+        battery_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::BATTERY),
+            Data::cells[0],
+            Data::cells[1],
+            Data::cells[2],
+            Data::cells[3],
+            Data::cells[4],
+            Data::cells[5],
+            Data::maximum_cell_voltage,
+            Data::minimum_cell_voltage,
+            Data::total_voltage,
+            Data::balancing,
+            Data::SOC,
+            Data::current);
     }
 
     current_state = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::STATE), BMSL::BMSL_state);
-}
+
+    dclv_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::DCLV),
+        &DCLV::pfm_state,
+        &DCLV::buffer_state,
+        &DCLV::reset_state,
+        &DCLV::frequency,
+        &DCLV::dead_time
+    );
+    }
 
 void Comms::send_packets(){
     if (Data::enableVoltageRead){
-        control_station_udp->send_packet(*voltage_data);
+        control_station_udp->send_packet(*battery_data);
     }
     control_station_udp->send_packet(*current_state);
+    control_station_udp->send_packet(*dclv_data);
+}
+
+void Comms::add_orders(){
+    turn_on_pfm = new HeapOrder(static_cast<uint16_t>(Comms::IDOrder::TURN_ON_PFM),&turn_on_pfm_callback);
+    turn_off_pfm = new HeapOrder(static_cast<uint16_t>(Comms::IDOrder::TURN_OFF_PFM),&turn_off_pfm_callback);
+    set_pfm_frequency = new HeapOrder(static_cast<uint16_t>(Comms::IDOrder::SET_PFM_FREQUENCY),&set_pfm_frequency_callback,&DCLV::frequency);
+    set_pfm_dead_time = new HeapOrder(static_cast<uint16_t>(Comms::IDOrder::SET_PFM_DEAD_TIME),&set_pfm_dead_time_callback,&DCLV::dead_time);
 }

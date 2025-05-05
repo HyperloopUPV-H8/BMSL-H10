@@ -10,14 +10,14 @@
 int main(void) {
 
 
-    BMSL bmsl;
-    STLIB::start("192.168.1.254","255.255.255.0");
-    bmsl.start();
+    BMSL::init();
+    STLIB::start("192.168.1.254");
+    BMSL::start();
 
 
     while (1) {
         STLIB::update();
-        bmsl.update();
+        BMSL::update();
     }
 }
 

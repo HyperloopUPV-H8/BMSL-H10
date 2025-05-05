@@ -7,8 +7,16 @@ class Comms {
    public:
 
     enum class IDPacket : uint16_t {
-        VOLTAGE = 777,
-        STATE = 778
+        BATTERY = 777,
+        STATE = 778,
+        DCLV = 779
+    };
+
+    enum class IDOrder : uint16_t {
+        TURN_ON_PFM = 502,
+        TURN_OFF_PFM = 503,
+        SET_PFM_FREQUENCY = 504,
+        SET_PFM_DEAD_TIME = 505
     };
 
 
@@ -33,8 +41,17 @@ class Comms {
 
     // -----------------Packets-----------------
 
-    static HeapPacket* voltage_data;
+    static HeapPacket* battery_data;
     static HeapPacket* current_state;
+    static HeapPacket* dclv_data;
+
+
+    // -----------------Orders-----------------
+
+    static HeapOrder* turn_on_pfm;
+    static HeapOrder* turn_off_pfm;
+    static HeapOrder* set_pfm_frequency;
+    static HeapOrder* set_pfm_dead_time;
 
 
     // -----------------Functions-----------------
@@ -42,6 +59,19 @@ class Comms {
     static void init();
     static void add_packets();
     static void send_packets();
+    static void add_orders();
+
+    static void turn_on_pfm_callback();
+    static void turn_off_pfm_callback();
+    static void set_pfm_frequency_callback();
+    static void set_pfm_dead_time_callback();
+
+    // -----------------Flags-----------------
+    static bool received_turn_on_pfm;
+    static bool received_turn_off_pfm;
+    static bool received_set_pfm_frequency;
+    static bool received_set_pfm_dead_time;
+
 };
 
 #endif
