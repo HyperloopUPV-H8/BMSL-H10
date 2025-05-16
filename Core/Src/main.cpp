@@ -11,7 +11,7 @@ int main(void) {
 
 
     BMSL::init();
-    STLIB::start("192.168.1.254");
+    STLIB::start("00:00:00:00:01:FE","192.168.1.254");
     BMSL::start();
 
 

@@ -44,21 +44,19 @@ void Comms::init() {
 }
 
 void Comms::add_packets(){
-    if (Data::enableVoltageRead){
-        battery_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::BATTERY),
-            Data::cells[0],
-            Data::cells[1],
-            Data::cells[2],
-            Data::cells[3],
-            Data::cells[4],
-            Data::cells[5],
-            Data::maximum_cell_voltage,
-            Data::minimum_cell_voltage,
-            Data::total_voltage,
-            Data::balancing,
-            Data::SOC,
-            Data::current);
-    }
+    battery_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::BATTERY),
+        Data::cells[0],
+        Data::cells[1],
+        Data::cells[2],
+        Data::cells[3],
+        Data::cells[4],
+        Data::cells[5],
+        Data::maximum_cell_voltage,
+        Data::minimum_cell_voltage,
+        Data::total_voltage,
+        Data::balancing,
+        Data::SOC,
+        Data::current);
 
     current_state = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::STATE), BMSL::BMSL_state);
 
@@ -67,14 +65,16 @@ void Comms::add_packets(){
         &DCLV::buffer_state,
         &DCLV::reset_state,
         &DCLV::frequency,
-        &DCLV::dead_time
+        &DCLV::dead_time,
+        &DCLV::output_current,
+        &DCLV::input_current,
+        &DCLV::output_voltage,
+        &DCLV::input_voltage
     );
     }
 
 void Comms::send_packets(){
-    if (Data::enableVoltageRead){
-        control_station_udp->send_packet(*battery_data);
-    }
+    control_station_udp->send_packet(*battery_data);
     control_station_udp->send_packet(*current_state);
     control_station_udp->send_packet(*dclv_data);
 }

@@ -36,6 +36,21 @@ class BMSL_SM{
         }
     }
 
+    // ------DCLV READING------
+
+    bool dclv_reading = false;
+
+    void dclv_reading_callback(){
+        dclv_reading = true;
+    }
+
+    void read_dclv(){
+        if(dclv_reading){
+            DCLV::read_sensors();
+            dclv_reading = false;
+        }
+    }
+
     // ------PACKET SENDING------
 
     bool packet_sending  = false;
@@ -90,18 +105,19 @@ class BMSL_SM{
         BMSL_SM_State_Machine.add_transition(BMSL_SMStates::OPERATIONAL, BMSL_SMStates::FAULT, operational_to_fault);
 
         BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, BMSL_SMStates::CONNECTING);
+        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ dclv_reading_callback(); }, 100ms, BMSL_SMStates::CONNECTING);
         BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, BMSL_SMStates::CONNECTING);
 
         BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, BMSL_SMStates::OPERATIONAL);
+        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ dclv_reading_callback(); }, 100ms, BMSL_SMStates::OPERATIONAL);
         BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, BMSL_SMStates::OPERATIONAL);
         BMSL_SM_State_Machine.add_enter_action([&](){ Data::LED_Operational->turn_on(); }, BMSL_SMStates::OPERATIONAL);
         BMSL_SM_State_Machine.add_exit_action([&](){ Data::LED_Operational->turn_off(); }, BMSL_SMStates::OPERATIONAL);
 
         BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, BMSL_SMStates::FAULT);
+        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ dclv_reading_callback(); }, 100ms, BMSL_SMStates::FAULT);
         BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, BMSL_SMStates::FAULT);
-        BMSL_SM_State_Machine.add_enter_action([&](){
-             Data::LED_Fault->turn_on();
-             }, BMSL_SMStates::FAULT);
+        BMSL_SM_State_Machine.add_enter_action([&](){ Data::LED_Fault->turn_on(); }, BMSL_SMStates::FAULT);
         BMSL_SM_State_Machine.add_exit_action([&](){ Data::LED_Fault->turn_off(); }, BMSL_SMStates::FAULT);
 
     }

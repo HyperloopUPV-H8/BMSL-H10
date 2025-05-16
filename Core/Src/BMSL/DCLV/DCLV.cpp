@@ -10,11 +10,25 @@ DCLV::RESET_STATES DCLV::reset_state;
 uint32_t DCLV::frequency{0};
 uint32_t DCLV::dead_time{300};
 
+LinearSensor<float>* DCLV::output_current_sensor{};
+LinearSensor<float>* DCLV::input_current_sensor{};
+LinearSensor<float>* DCLV::output_voltage_sensor{};
+LinearSensor<float>* DCLV::input_voltage_sensor{};
+float* DCLV::output_current{};
+float* DCLV::input_current{};
+float* DCLV::output_voltage{};
+float* DCLV::input_voltage{};
+
 void DCLV::init() {
     pfm = new DualPWM(PWM_HIGH, PWM_LOW);
     pfm_state = PFM_STATES::INACTIVE;
     buffer_en = new DigitalOutput(PWM_BUFFER_EN);  // LOW ACTIVE
     reset = new DigitalOutput(PWM_RESET);
+
+    output_current_sensor = new LinearSensor<float>(DCLV_OUTPUT_CURRENT_SENSOR, 10.266f,-0.602f,output_current);
+    input_current_sensor = new LinearSensor<float>(DCLV_INPUT_CURRENT_SENSOR, 0.0f,0.0f,input_current);
+    output_voltage_sensor = new LinearSensor<float>(DCLV_OUTPUT_VOLTAGE_SENSOR, 9.46f,-0.529f,output_voltage);
+    input_voltage_sensor = new LinearSensor<float>(DCLV_INPUT_CURRENT_SENSOR, 159.614f,-10.155f,input_voltage);
 
     pfm->set_duty_cycle(duty);
     pfm->set_frequency(frequency);
@@ -48,4 +62,11 @@ void DCLV::set_pfm_frequency(uint32_t frequency) {
 
 void DCLV::set_pfm_dead_time(uint32_t dead_time) {
     pfm->set_dead_time(std::chrono::nanoseconds(dead_time));
+}
+
+void DCLV::read_sensors(){
+    output_current_sensor->read();
+    input_current_sensor->read();
+    output_voltage_sensor->read();
+    input_voltage_sensor->read();
 }

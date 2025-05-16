@@ -32,11 +32,21 @@ class DCLV {
         static uint32_t frequency;
         static uint32_t dead_time;
 
+        static LinearSensor<float>* output_current_sensor;
+        static LinearSensor<float>* input_current_sensor;
+        static LinearSensor<float>* output_voltage_sensor;
+        static LinearSensor <float>* input_voltage_sensor;
+        static float* output_current;
+        static float* input_current;
+        static float* output_voltage;
+        static float* input_voltage;
+
         static void init();
         static void turn_on_pfm();
         static void turn_off_pfm();
         static void set_pfm_frequency(uint32_t freq);
         static void set_pfm_dead_time(uint32_t dt);
+        static void read_sensors();
 
 };
 

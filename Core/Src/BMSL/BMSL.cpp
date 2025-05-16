@@ -23,6 +23,7 @@ void BMSL::start(){
 
 void BMSL::update(){
     state_machine->read_batteries();
+    state_machine->read_dclv();
     state_machine->send_packets();
     state_machine->BMSL_SM_State_Machine.check_transitions();
     state_machine->check_orders();
