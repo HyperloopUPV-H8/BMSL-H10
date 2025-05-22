@@ -25,10 +25,15 @@ void DCLV::init() {
     buffer_en = new DigitalOutput(PWM_BUFFER_EN);  // LOW ACTIVE
     reset = new DigitalOutput(PWM_RESET);
 
+    output_current = new float;
+    input_current = new float;
+    output_voltage = new float;
+    input_voltage = new float;
+
     output_current_sensor = new LinearSensor<float>(DCLV_OUTPUT_CURRENT_SENSOR, 10.266f,-0.602f,output_current);
     input_current_sensor = new LinearSensor<float>(DCLV_INPUT_CURRENT_SENSOR, 0.0f,0.0f,input_current);
     output_voltage_sensor = new LinearSensor<float>(DCLV_OUTPUT_VOLTAGE_SENSOR, 9.46f,-0.529f,output_voltage);
-    input_voltage_sensor = new LinearSensor<float>(DCLV_INPUT_CURRENT_SENSOR, 159.614f,-10.155f,input_voltage);
+    input_voltage_sensor = new LinearSensor<float>(DCLV_INPUT_VOLTAGE_SENSOR, 159.614f,-10.155f,input_voltage);
 
     pfm->set_duty_cycle(duty);
     pfm->set_frequency(frequency);

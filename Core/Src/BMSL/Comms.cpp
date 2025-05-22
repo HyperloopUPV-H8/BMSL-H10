@@ -66,10 +66,10 @@ void Comms::add_packets(){
         &DCLV::reset_state,
         &DCLV::frequency,
         &DCLV::dead_time,
-        &DCLV::output_current,
-        &DCLV::input_current,
-        &DCLV::output_voltage,
-        &DCLV::input_voltage
+        DCLV::output_current,
+        DCLV::input_current,
+        DCLV::output_voltage,
+        DCLV::input_voltage
     );
     }
 
