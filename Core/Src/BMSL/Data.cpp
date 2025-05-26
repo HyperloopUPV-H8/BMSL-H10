@@ -2,8 +2,8 @@
 #include "BMSL/BMSL.hpp"
 #include "BMS-LIB.hpp"
 
-#define current_sensor_offset 0
-#define current_sensor_slope 1
+#define current_sensor_offset -0.751
+#define current_sensor_slope 10.236
 
 std::array<float*, 6> Data::cells{};
 float* Data::maximum_cell_voltage{};
@@ -32,6 +32,7 @@ void Data::init() {
     SOC = new float;
 
     current = new float;
+    current_sensor = new LinearSensor<float> (CURRENT_SENSOR, current_sensor_slope, current_sensor_offset, current);
 
     LED_Operational = new DigitalOutput(LED_OPERATIONAL);
     LED_Fault = new DigitalOutput(LED_FAULT);
@@ -54,8 +55,6 @@ void Data::start() {
 
     balancing = &bmsl->external_adcs[0].battery.is_balancing;
     SOC = &bmsl->external_adcs[0].battery.SOC;
-
-    current_sensor = new LinearSensor<float> (CURRENT_SENSOR, current_sensor_slope, current_sensor_offset, current);
 
 }
 
