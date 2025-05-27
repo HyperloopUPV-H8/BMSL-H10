@@ -1,5 +1,6 @@
 #include "BMSL/DCLV/DCLV.hpp"
 #include "BMSL/Data.hpp"
+#include "BMSL/BMSL_Pinout.hpp"
 
 DualPWM* DCLV::pfm;
 DCLV::PFM_STATES DCLV::pfm_state;
