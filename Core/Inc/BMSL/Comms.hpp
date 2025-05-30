@@ -34,24 +34,24 @@ class Comms {
 
     // -----------------Sockets-----------------
 
-    static ServerSocket* control_station;
-    static DatagramSocket* control_station_udp;
-    //static Socket* HVSCU;
+    static inline ServerSocket* control_station{};
+    static inline DatagramSocket* control_station_udp{};
+    //static inline Socket* HVSCU{};
 
 
     // -----------------Packets-----------------
 
-    static HeapPacket* battery_data;
-    static HeapPacket* current_state;
-    static HeapPacket* dclv_data;
+    static inline HeapPacket* battery_data{};
+    static inline HeapPacket* current_state{};
+    static inline HeapPacket* dclv_data{};
 
 
     // -----------------Orders-----------------
 
-    static HeapOrder* turn_on_pfm;
-    static HeapOrder* turn_off_pfm;
-    static HeapOrder* set_pfm_frequency;
-    static HeapOrder* set_pfm_dead_time;
+    static inline HeapOrder* turn_on_pfm{};
+    static inline HeapOrder* turn_off_pfm{};
+    static inline HeapOrder* set_pfm_frequency{};
+    static inline HeapOrder* set_pfm_dead_time{};
 
 
     // -----------------Functions-----------------
@@ -67,10 +67,10 @@ class Comms {
     static void set_pfm_dead_time_callback();
 
     // -----------------Flags-----------------
-    static bool received_turn_on_pfm;
-    static bool received_turn_off_pfm;
-    static bool received_set_pfm_frequency;
-    static bool received_set_pfm_dead_time;
+    static inline bool received_turn_on_pfm{};
+    static inline bool received_turn_off_pfm{};
+    static inline bool received_set_pfm_frequency{};
+    static inline bool received_set_pfm_dead_time{};
 
 };
 

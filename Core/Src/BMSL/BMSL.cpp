@@ -1,9 +1,5 @@
 #include "BMSL/BMSL.hpp"
 
-uint8_t* BMSL::BMSL_state;
-BMSL_SM* BMSL::state_machine;
-
-
 void BMSL::init(){
     state_machine = new BMSL_SM();
     BMSL_state = &state_machine->BMSL_SM_State_Machine.current_state;

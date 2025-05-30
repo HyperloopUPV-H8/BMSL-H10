@@ -2,23 +2,6 @@
 #include "BMSL/Data.hpp"
 #include "BMSL/BMSL_Pinout.hpp"
 
-DualPWM* DCLV::pfm;
-DCLV::PFM_STATES DCLV::pfm_state;
-DigitalOutput* DCLV::buffer_en;
-DCLV::BUFFER_STATES DCLV::buffer_state;
-DigitalOutput* DCLV::reset;
-DCLV::RESET_STATES DCLV::reset_state;
-uint32_t DCLV::frequency{0};
-uint32_t DCLV::dead_time{300};
-
-LinearSensor<float>* DCLV::output_current_sensor{};
-LinearSensor<float>* DCLV::input_current_sensor{};
-LinearSensor<float>* DCLV::output_voltage_sensor{};
-LinearSensor<float>* DCLV::input_voltage_sensor{};
-float* DCLV::output_current{};
-float* DCLV::input_current{};
-float* DCLV::output_voltage{};
-float* DCLV::input_voltage{};
 
 void DCLV::init() {
     pfm = new DualPWM(PWM_HIGH, PWM_LOW);

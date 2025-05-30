@@ -3,24 +3,6 @@
 #include "BMSL/BMSL.hpp"
 #include "BMSL/DCLV/DCLV.hpp"
 
-HeapPacket* Comms::battery_data{};
-HeapPacket* Comms::current_state{};
-HeapPacket* Comms::dclv_data{};
-
-HeapOrder* Comms::turn_on_pfm{};
-HeapOrder* Comms::turn_off_pfm{};
-HeapOrder* Comms::set_pfm_frequency{};
-HeapOrder* Comms::set_pfm_dead_time{};
-
-ServerSocket* Comms::control_station = nullptr;
-DatagramSocket* Comms::control_station_udp = nullptr;
-//Socket* Comms::HVSCU = nullptr;
-
-bool Comms::received_turn_on_pfm{false};
-bool Comms::received_turn_off_pfm{false};
-bool Comms::received_set_pfm_frequency{false};
-bool Comms::received_set_pfm_dead_time{false};
-
 // Callbacks
 void Comms::turn_on_pfm_callback() {
     received_turn_on_pfm = true;

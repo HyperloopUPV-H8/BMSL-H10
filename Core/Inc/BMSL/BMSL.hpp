@@ -13,8 +13,8 @@ class BMSL{
 
     public:
 
-    static BMSL_SM* state_machine;
-    static uint8_t* BMSL_state;
+    static inline BMSL_SM* state_machine{};
+    static inline uint8_t* BMSL_state{};
 
     
     static void init();

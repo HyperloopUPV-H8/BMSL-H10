@@ -21,25 +21,25 @@ class DCLV {
             ACTIVE
         };
         
-        static DualPWM* pfm;
-        static PFM_STATES pfm_state;
-        static DigitalOutput* buffer_en;
-        static BUFFER_STATES buffer_state;
-        static DigitalOutput* reset;
-        static RESET_STATES reset_state;
+        static inline DualPWM* pfm{};
+        static inline PFM_STATES pfm_state{};
+        static inline DigitalOutput* buffer_en;
+        static inline BUFFER_STATES buffer_state;
+        static inline DigitalOutput* reset;
+        static inline RESET_STATES reset_state;
 
         constexpr static float duty{50.0f};
-        static uint32_t frequency;
-        static uint32_t dead_time;
+        static inline uint32_t frequency{};
+        static inline uint32_t dead_time{100};
 
-        static LinearSensor<float>* output_current_sensor;
-        static LinearSensor<float>* input_current_sensor;
-        static LinearSensor<float>* output_voltage_sensor;
-        static LinearSensor <float>* input_voltage_sensor;
-        static float* output_current;
-        static float* input_current;
-        static float* output_voltage;
-        static float* input_voltage;
+        static inline LinearSensor<float>* output_current_sensor;
+        static inline LinearSensor<float>* input_current_sensor;
+        static inline LinearSensor<float>* output_voltage_sensor;
+        static inline LinearSensor <float>* input_voltage_sensor;
+        static inline float* output_current;
+        static inline float* input_current;
+        static inline float* output_voltage;
+        static inline float* input_voltage;
 
         static void init();
         static void turn_on_pfm();
