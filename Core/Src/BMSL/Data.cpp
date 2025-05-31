@@ -2,9 +2,6 @@
 
 #include "BMSL/BMSL_Pinout.hpp"
 
-#define current_sensor_offset -0.751
-#define current_sensor_slope 10.236
-
 //--------------- BMS CONFIG FOR LTC6810-DRIVER ----------------
 
 void Data::BMSConfig::SPI_transmit(const span<uint8_t> data) {
@@ -42,8 +39,8 @@ void Data::init() {
     SOC = new float;
 
     current = new float;
-    current_sensor = new LinearSensor<float>(
-        CURRENT_SENSOR, current_sensor_slope, current_sensor_offset, current);
+    current_sensor =
+        new LinearSensor<float>(CURRENT_SENSOR, 10.236f, -0.751f, current);
 
     LED_Operational = new DigitalOutput(LED_OPERATIONAL);
     LED_Fault = new DigitalOutput(LED_FAULT);
