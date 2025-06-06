@@ -33,10 +33,7 @@ void Comms::add_packets(){
         Data::cells[3],
         Data::cells[4],
         Data::cells[5],
-        Data::maximum_cell_voltage,
-        Data::minimum_cell_voltage,
         Data::total_voltage,
-        Data::balancing,
         Data::SOC,
         Data::current);
 

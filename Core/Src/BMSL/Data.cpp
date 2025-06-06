@@ -31,11 +31,8 @@ int32_t Data::BMSConfig::get_tick() { return Data::us_counter; }
 void Data::init() {
     for (auto& cell : cells) cell = new float;
 
-    maximum_cell_voltage = new float;
-    minimum_cell_voltage = new float;
     total_voltage = new float;
 
-    balancing = new bool;
     SOC = new float;
 
     current = new float;
@@ -57,17 +54,56 @@ void Data::start() {
     cells[3] = &battery[0].cells[3];
     cells[4] = &battery[0].cells[4];
     cells[5] = &battery[0].cells[5];
-    maximum_cell_voltage = &dummy_float;  // REMEMBER, THIS IS DUMMY
-    minimum_cell_voltage = &dummy_float;  // REMEMBER, THIS IS DUMMY
     total_voltage = &battery[0].total_voltage;
-    balancing = &dummy_bool;  // REMEMBER, THIS IS DUMMY
-    SOC = &dummy_float;       // REMEMBER, THIS IS DUMMY
+    *SOC = calculate_battery_SOC();
 }
 
 void Data::read_temperature() {}
 
+float Data::calculate_cell_SOC(float voltage) {
+    if (voltage <= voltages.front()) {
+        return socs.front();
+    }
+    if (voltage >= voltages.back()) {
+        return socs.back();
+    }
+
+    size_t left{0};
+    size_t right{voltages.size() - 1};
+
+    while (right - left > 1) {
+        size_t mid = (left + right) / 2;
+        if (voltage < voltages[mid]) {
+            right = mid;
+        } else {
+            left = mid;
+        }
+    }
+
+    float v1 = voltages[left];
+    float v2 = voltages[right];
+    float soc1 = socs[left];
+    float soc2 = socs[right];
+
+    return soc1 + (soc2 - soc1) * (voltage - v1) / (v2 - v1);
+}
+
+float Data::calculate_battery_SOC() {
+    float total_soc = 0.0f;
+
+    for (size_t i = 0; i < N_CELLS; ++i) {
+        float cell_soc = calculate_cell_SOC(*cells[i]);
+        total_soc += cell_soc;
+    }
+
+    return (total_soc / static_cast<float>(N_CELLS));
+}
+
+void Data::update_SOC() { *SOC = calculate_battery_SOC(); }
+
 void Data::read() {
     bms.update();
     current_sensor->read();
+    update_SOC();
     read_temperature();
 }
