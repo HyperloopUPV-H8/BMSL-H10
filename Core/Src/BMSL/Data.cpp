@@ -55,51 +55,43 @@ void Data::start() {
     cells[4] = &battery[0].cells[4];
     cells[5] = &battery[0].cells[5];
     total_voltage = &battery[0].total_voltage;
-    *SOC = calculate_battery_SOC();
+    last_reading_time = HAL_GetTick();
 }
 
 void Data::read_temperature() {}
 
-float Data::calculate_cell_SOC(float voltage) {
-    if (voltage <= voltages.front()) {
-        return socs.front();
-    }
-    if (voltage >= voltages.back()) {
-        return socs.back();
-    }
+float Data::coulomb_counting_SOC(float current) {
+    uint32_t current_time = HAL_GetTick();
 
-    size_t left{0};
-    size_t right{voltages.size() - 1};
+    float delta_time = (current_time - last_reading_time) / 1000.0f;
+    last_reading_time = current_time;
 
-    while (right - left > 1) {
-        size_t mid = (left + right) / 2;
-        if (voltage < voltages[mid]) {
-            right = mid;
+    float delta_SOC = current * delta_time / CAPACITY_AH * 100.0f;
+    return delta_SOC;
+}
+
+float Data::ocv_battery_SOC(float c1, float c2, float c3, float c4, float c5,
+                            float c6) {
+    float total_voltage = c1 + c2 + c3 + c4 + c5 + c6;
+    float x = total_voltage - 20.0;
+    float result = -62.5 + (14.9 * x) + (21.9 * x * x) + (-4.18 * x * x * x);
+    return result;
+}
+
+void Data::update_SOC() {
+    if (first_soc_flag == true) {
+        *SOC = ocv_battery_SOC(*cells[0], *cells[1], *cells[2], *cells[3],
+                               *cells[4], *cells[5]);
+        first_soc_flag = false;
+    } else {
+        if (std::abs(*current) < REST_THRESHOLD) {
+            *SOC += coulomb_counting_SOC(*current);
         } else {
-            left = mid;
+            *SOC = ocv_battery_SOC(*cells[0], *cells[1], *cells[2], *cells[3],
+                                   *cells[4], *cells[5]);
         }
     }
-
-    float v1 = voltages[left];
-    float v2 = voltages[right];
-    float soc1 = socs[left];
-    float soc2 = socs[right];
-
-    return soc1 + (soc2 - soc1) * (voltage - v1) / (v2 - v1);
 }
-
-float Data::calculate_battery_SOC() {
-    float total_soc = 0.0f;
-
-    for (size_t i = 0; i < N_CELLS; ++i) {
-        float cell_soc = calculate_cell_SOC(*cells[i]);
-        total_soc += cell_soc;
-    }
-
-    return (total_soc / static_cast<float>(N_CELLS));
-}
-
-void Data::update_SOC() { *SOC = calculate_battery_SOC(); }
 
 void Data::read() {
     bms.update();

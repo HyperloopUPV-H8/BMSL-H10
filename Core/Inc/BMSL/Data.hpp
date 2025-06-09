@@ -6,6 +6,8 @@
 
 #define N_BATTERIES 1
 #define READING_PERIOD_US 10000
+#define CAPACITY_AH 20.0f
+#define REST_THRESHOLD 0.1f
 
 class Data {
     struct BMSConfig {
@@ -81,10 +83,12 @@ class Data {
     static void read();
     static void read_temperature();
 
-    static float calculate_cell_SOC(float cell_voltage);
-    static float calculate_battery_SOC();
     static void update_SOC();
-
+    static float ocv_battery_SOC(float c1,float c2, float c3, float c4, float c5, float c6);
+    static float coulomb_counting_SOC(float current);
+    static inline uint32_t last_reading_time{};
+    static inline bool first_soc_flag {true};
+    
     static inline LinearSensor<float>* current_sensor{};
     static inline float* current{};
     static inline DigitalOutput* LED_Operational{};
