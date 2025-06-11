@@ -12,6 +12,8 @@ class BMSL_SM{
 
     public:
 
+    // ------TRANSITIONS---------
+
     static bool connecting_to_operational(){
         if(Comms::master_connection == Comms::Master::CONNECTED){
             return Comms::VCU->is_connected();
@@ -27,6 +29,14 @@ class BMSL_SM{
         else{
             return !Comms::control_station->is_connected();
         }
+    }
+
+    static bool idle_to_charging(){
+        return true; // CHANGE THIS TO A REAL CONDITION
+    }
+
+    static bool charging_to_idle(){
+        return true; // CHANGE THIS TO A REAL CONDITION
     }
 
     // ------BATTERY READING------
@@ -94,39 +104,50 @@ class BMSL_SM{
     }
 
 
-    StateMachine BMSL_SM_State_Machine;
+    StateMachine general_sm;
+    StateMachine operational_sm;
 
-    enum BMSL_SMStates {
+    enum general_states : uint8_t {
         CONNECTING,
         OPERATIONAL,
         FAULT,
     };
 
+    enum operational_states : uint8_t{
+        IDLE,
+        CHARGING
+    };
+
     BMSL_SM(){
 
-        BMSL_SM_State_Machine = StateMachine(BMSL_SMStates::CONNECTING);
+        general_sm = StateMachine(general_states::CONNECTING);
+        operational_sm = StateMachine(operational_states::IDLE);
 
-        BMSL_SM_State_Machine.add_state(BMSL_SMStates::OPERATIONAL);
-        BMSL_SM_State_Machine.add_state(BMSL_SMStates::FAULT);
+        general_sm.add_state(general_states::OPERATIONAL);
+        general_sm.add_state(general_states::FAULT);
+        operational_sm.add_state(operational_states::CHARGING);
+        general_sm.add_state_machine(operational_sm, general_states::OPERATIONAL);
 
-        BMSL_SM_State_Machine.add_transition(BMSL_SMStates::CONNECTING, BMSL_SMStates::OPERATIONAL, connecting_to_operational);
-        BMSL_SM_State_Machine.add_transition(BMSL_SMStates::OPERATIONAL, BMSL_SMStates::FAULT, operational_to_fault);
+        general_sm.add_transition(general_states::CONNECTING, general_states::OPERATIONAL, connecting_to_operational);
+        general_sm.add_transition(general_states::OPERATIONAL, general_states::FAULT, operational_to_fault);
+        operational_sm.add_transition(operational_states::IDLE, operational_states::CHARGING, idle_to_charging);
+        operational_sm.add_transition(operational_states::CHARGING, operational_states::IDLE, charging_to_idle);
 
-        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, BMSL_SMStates::CONNECTING);
-        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ dclv_reading_callback(); }, 100ms, BMSL_SMStates::CONNECTING);
-        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, BMSL_SMStates::CONNECTING);
+        general_sm.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, general_states::CONNECTING);
+        general_sm.add_low_precision_cyclic_action([&](){ dclv_reading_callback(); }, 100ms, general_states::CONNECTING);
+        general_sm.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, general_states::CONNECTING);
 
-        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, BMSL_SMStates::OPERATIONAL);
-        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ dclv_reading_callback(); }, 100ms, BMSL_SMStates::OPERATIONAL);
-        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, BMSL_SMStates::OPERATIONAL);
-        BMSL_SM_State_Machine.add_enter_action([&](){ Data::LED_Operational->turn_on(); }, BMSL_SMStates::OPERATIONAL);
-        BMSL_SM_State_Machine.add_exit_action([&](){ Data::LED_Operational->turn_off(); }, BMSL_SMStates::OPERATIONAL);
+        general_sm.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, general_states::OPERATIONAL);
+        general_sm.add_low_precision_cyclic_action([&](){ dclv_reading_callback(); }, 100ms, general_states::OPERATIONAL);
+        general_sm.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, general_states::OPERATIONAL);
+        general_sm.add_enter_action([&](){ Data::LED_Operational->turn_on(); }, general_states::OPERATIONAL);
+        general_sm.add_exit_action([&](){ Data::LED_Operational->turn_off(); }, general_states::OPERATIONAL);
 
-        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, BMSL_SMStates::FAULT);
-        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ dclv_reading_callback(); }, 100ms, BMSL_SMStates::FAULT);
-        BMSL_SM_State_Machine.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, BMSL_SMStates::FAULT);
-        BMSL_SM_State_Machine.add_enter_action([&](){ Data::LED_Fault->turn_on(); }, BMSL_SMStates::FAULT);
-        BMSL_SM_State_Machine.add_exit_action([&](){ Data::LED_Fault->turn_off(); }, BMSL_SMStates::FAULT);
+        general_sm.add_low_precision_cyclic_action([&](){ battery_reading_callback(); }, 100ms, general_states::FAULT);
+        general_sm.add_low_precision_cyclic_action([&](){ dclv_reading_callback(); }, 100ms, general_states::FAULT);
+        general_sm.add_low_precision_cyclic_action([&](){ packet_sending_callback(); }, 100ms, general_states::FAULT);
+        general_sm.add_enter_action([&](){ Data::LED_Fault->turn_on(); }, general_states::FAULT);
+        general_sm.add_exit_action([&](){ Data::LED_Fault->turn_off(); }, general_states::FAULT);
 
     }
 
