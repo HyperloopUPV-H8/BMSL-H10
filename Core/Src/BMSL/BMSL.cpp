@@ -13,9 +13,9 @@ void BMSL::init(){
     DCLV::init();
 }
 
-void BMSL::start(){
+void BMSL::start(Comms::Master master_connection){
     Data::start();
-    Comms::init();
+    Comms::init(master_connection);
 }
 
 void BMSL::update(){

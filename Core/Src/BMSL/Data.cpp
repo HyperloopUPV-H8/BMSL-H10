@@ -58,7 +58,9 @@ void Data::start() {
     last_reading_time = HAL_GetTick();
 }
 
-void Data::read_temperature() {}
+void Data::read_temperature(){
+    
+}
 
 float Data::coulomb_counting_SOC(float current) {
     uint32_t current_time = HAL_GetTick();
@@ -73,7 +75,9 @@ float Data::coulomb_counting_SOC(float current) {
 float Data::ocv_battery_SOC(float c1, float c2, float c3, float c4, float c5,
                             float c6) {
     float total_voltage = c1 + c2 + c3 + c4 + c5 + c6;
-    float x = total_voltage - 20.0;
+    float x =
+        total_voltage - 20.0;  // to get a bigger difference between values so
+                               // the polynomial is more accurate
     float result = -62.5 + (14.9 * x) + (21.9 * x * x) + (-4.18 * x * x * x);
     return result;
 }

@@ -19,6 +19,11 @@ class Comms {
         SET_PFM_DEAD_TIME = 505
     };
 
+    enum class Master : uint8_t {
+        CONNECTED,
+        DISCONNECTED
+    };
+
 
     // -----------------IP's/Ports-----------------
 
@@ -26,17 +31,20 @@ class Comms {
     static const uint16_t CLIENT_PORT = 50300;
     static const uint16_t CONTROL_STATION_UDP_PORT = 50400;
     static const uint16_t HVSCU_PORT = 50900;
+    static const uint16_t VCU_PORT = 0;
 
     static constexpr std::string CONTROL_SATION_IP = "192.168.0.9";
     static constexpr std::string BMSL_IP = "192.168.1.254";
     static constexpr std::string HVSCU_IP = "192.168.1.7";
+    static constexpr std::string VCU_IP = "192.168.1.2";
 
 
     // -----------------Sockets-----------------
 
+    static inline Master master_connection{Master::DISCONNECTED};
     static inline ServerSocket* control_station{};
     static inline DatagramSocket* control_station_udp{};
-    //static inline Socket* HVSCU{};
+    static inline Socket* VCU{};
 
 
     // -----------------Packets-----------------
@@ -56,7 +64,7 @@ class Comms {
 
     // -----------------Functions-----------------
 
-    static void init();
+    static void init(Master master_connection);
     static void add_packets();
     static void send_packets();
     static void add_orders();

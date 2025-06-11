@@ -18,7 +18,7 @@ class BMSL{
 
     
     static void init();
-    static void start();
+    static void start(Comms::Master master_connection);
     static void update();
 
 };
