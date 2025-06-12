@@ -37,7 +37,7 @@ void Data::init() {
 
     current = new float;
     current_sensor =
-        new LinearSensor<float>(CURRENT_SENSOR, 10.236f, -0.751f, current);
+        new LinearSensor<float>(CURRENT_SENSOR, 10.236f, -0.581f, current);
 
     LED_Operational = new DigitalOutput(LED_OPERATIONAL);
     LED_Fault = new DigitalOutput(LED_FAULT);
@@ -58,9 +58,7 @@ void Data::start() {
     last_reading_time = HAL_GetTick();
 }
 
-void Data::read_temperature(){
-    
-}
+void Data::read_temperature() {}
 
 float Data::coulomb_counting_SOC(float current) {
     uint32_t current_time = HAL_GetTick();
