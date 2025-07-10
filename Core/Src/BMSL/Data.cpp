@@ -55,10 +55,17 @@ void Data::start() {
     cells[4] = &battery[0].cells[4];
     cells[5] = &battery[0].cells[5];
     total_voltage = &battery[0].total_voltage;
+    GPIO_voltage =
+        &battery[0].GPIOs[0];
+    conv_rate  = &battery[0].conv_rate;
     last_reading_time = HAL_GetTick();
 }
 
-void Data::read_temperature() {}
+void Data::read_temperature() {
+    auto resistance = (*GPIO_voltage * RESISTANCE_REFERENCE) /
+                      (VOLTAGE_REFERENCE - *GPIO_voltage);
+    *temperature = (resistance - R0) / (TCR * R0);
+}
 
 float Data::coulomb_counting_SOC(float current) {
     uint32_t current_time = HAL_GetTick();
@@ -66,7 +73,7 @@ float Data::coulomb_counting_SOC(float current) {
     float delta_time = (current_time - last_reading_time) / 1000.0f;
     last_reading_time = current_time;
 
-    float delta_SOC = current * delta_time / CAPACITY_AH * 100.0f;
+    float delta_SOC = current * delta_time / CAPACITY_AH * 3600.0f;
     return delta_SOC;
 }
 
