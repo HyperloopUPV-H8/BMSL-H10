@@ -17,16 +17,10 @@ void Comms::set_pfm_dead_time_callback() {
     received_set_pfm_dead_time = true;
 }
 
-void Comms::init(Master master_connection) {
+void Comms::init() {
 
-    Comms::master_connection = master_connection;
-
-    if(master_connection == Master::CONNECTED){
-        VCU  = new Socket(IPV4(BMSL_IP), CLIENT_PORT, IPV4(VCU_IP), VCU_PORT);
-    }
-    else if(master_connection == Master::DISCONNECTED){
-        control_station = new ServerSocket(IPV4(BMSL_IP), CONTROL_STATION_PORT,1000,500,10);
-    }
+    control_station = new ServerSocket(IPV4(BMSL_IP), CONTROL_STATION_PORT);
+    
 
     control_station_udp = new DatagramSocket(IPV4(BMSL_IP), CONTROL_STATION_UDP_PORT,IPV4(CONTROL_SATION_IP), CONTROL_STATION_UDP_PORT);
     

@@ -41,10 +41,8 @@ class Comms {
 
     // -----------------Sockets-----------------
 
-    static inline Master master_connection{Master::DISCONNECTED};
     static inline ServerSocket* control_station{};
     static inline DatagramSocket* control_station_udp{};
-    static inline Socket* VCU{};
 
 
     // -----------------Packets-----------------
@@ -64,7 +62,7 @@ class Comms {
 
     // -----------------Functions-----------------
 
-    static void init(Master master_connection);
+    static void init();
     static void add_packets();
     static void send_packets();
     static void add_orders();
