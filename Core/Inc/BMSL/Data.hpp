@@ -5,7 +5,7 @@
 #include "ST-LIB.hpp"
 
 #define N_BATTERIES 1
-#define READING_PERIOD_US 10000
+#define READING_PERIOD_US 17000
 #define CAPACITY_AH 20.0f
 #define REST_THRESHOLD 0.1f
 
@@ -25,40 +25,51 @@ class Data {
         static int32_t get_tick(void);
         static constexpr int32_t tick_resolution_us{500};
         static constexpr int32_t period_us{READING_PERIOD_US};
-        static constexpr int32_t conv_rate_time_ms{1000};
+        static constexpr int32_t conv_rate_time_ms{100};
     };
 
-   public:
-    static inline std::array<float*, 6> cells{};
-    static inline float* total_voltage{};
-    static inline float* GPIO_voltage{};
-    static inline float* temperature{};
-    static inline float* conv_rate{};
+    static constexpr BMS<BMSConfig> bms{};
+    static inline auto& battery = bms.get_data();
 
-    static inline float* SOC{};
+    static void get_max_min_cells();
+
+   public:
+    static inline std::array<std::reference_wrapper<float>, 6> cells{
+        std::ref(battery[0].cells[0]), std::ref(battery[0].cells[1]),
+        std::ref(battery[0].cells[2]), std::ref(battery[0].cells[3]),
+        std::ref(battery[0].cells[4]), std::ref(battery[0].cells[5])};
+
+    static inline float max_cell{};
+    static inline float min_cell{};
+
+    static inline float& total_voltage{battery[0].total_voltage};
+    static inline float& GPIO_voltage_1{battery[0].GPIOs[0]};
+    static inline float& GPIO_voltage_2{battery[0].GPIOs[1]};
+    static inline float temperature_1{};
+    static inline float temperature_2{};
+    static inline float& conv_rate{battery[0].conv_rate};
+
+    static inline float SOC{50.0f};
 
     static void init();
     static void start();
     static void read();
-    static void read_temperature();
+    static void read_temperature(const float voltage, float* temperature);
 
     static void update_SOC();
-    static float ocv_battery_SOC(float c1,float c2, float c3, float c4, float c5, float c6);
+    static float ocv_battery_SOC();
     static float coulomb_counting_SOC(float current);
     static inline uint32_t last_reading_time{};
-    static inline bool first_soc_flag {true};
-    
+    static inline bool first_soc_flag{true};
+
     static inline LinearSensor<float>* current_sensor{};
     static inline float* current{};
     static inline DigitalOutput* LED_Operational{};
     static inline DigitalOutput* LED_Fault{};
 
-    static constexpr BMS<BMSConfig> bms{};
-
-    static inline auto& battery = bms.get_data();
     static inline int32_t us_counter{};
 
-    private:
+   private:
 };
 
 #endif

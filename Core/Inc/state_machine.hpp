@@ -121,9 +121,11 @@ class BMSL_SM {
         general_sm.add_low_precision_cyclic_action(
             [&]() { battery_reading_callback(); }, 100ms,
             general_states::CONNECTING);
+
         general_sm.add_low_precision_cyclic_action(
             [&]() { dclv_reading_callback(); }, 100ms,
             general_states::CONNECTING);
+
         general_sm.add_low_precision_cyclic_action(
             [&]() { packet_sending_callback(); }, 100ms,
             general_states::CONNECTING);
@@ -131,12 +133,19 @@ class BMSL_SM {
         general_sm.add_low_precision_cyclic_action(
             [&]() { battery_reading_callback(); }, 100ms,
             general_states::OPERATIONAL);
+
         general_sm.add_low_precision_cyclic_action(
             [&]() { dclv_reading_callback(); }, 100ms,
             general_states::OPERATIONAL);
+
         general_sm.add_low_precision_cyclic_action(
             [&]() { packet_sending_callback(); }, 100ms,
             general_states::OPERATIONAL);
+
+        general_sm.add_low_precision_cyclic_action(
+            [&]() { ProtectionManager::check_protections(); }, 100ms,
+            general_states::OPERATIONAL);
+
         general_sm.add_enter_action([&]() { Data::LED_Operational->turn_on(); },
                                     general_states::OPERATIONAL);
         general_sm.add_exit_action([&]() { Data::LED_Operational->turn_off(); },
@@ -145,10 +154,17 @@ class BMSL_SM {
         general_sm.add_low_precision_cyclic_action(
             [&]() { battery_reading_callback(); }, 100ms,
             general_states::FAULT);
+
         general_sm.add_low_precision_cyclic_action(
             [&]() { dclv_reading_callback(); }, 100ms, general_states::FAULT);
+
         general_sm.add_low_precision_cyclic_action(
             [&]() { packet_sending_callback(); }, 100ms, general_states::FAULT);
+
+        general_sm.add_low_precision_cyclic_action(
+            [&]() { ProtectionManager::check_protections(); }, 100ms,
+            general_states::FAULT);
+
         general_sm.add_enter_action([&]() { Data::LED_Fault->turn_on(); },
                                     general_states::FAULT);
         general_sm.add_exit_action([&]() { Data::LED_Fault->turn_off(); },

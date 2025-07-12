@@ -29,12 +29,6 @@ int32_t Data::BMSConfig::get_tick() { return Data::us_counter; }
 //---------------------------------------------------------------
 
 void Data::init() {
-    for (auto& cell : cells) cell = new float;
-
-    total_voltage = new float;
-
-    SOC = new float;
-
     current = new float;
     current_sensor =
         new LinearSensor<float>(CURRENT_SENSOR, 10.236f, -0.581f, current);
@@ -48,22 +42,12 @@ void Data::init() {
 void Data::start() {
     Time::register_high_precision_alarm(500, +[]() { ++us_counter; });
 
-    cells[0] = &battery[0].cells[0];
-    cells[1] = &battery[0].cells[1];
-    cells[2] = &battery[0].cells[2];
-    cells[3] = &battery[0].cells[3];
-    cells[4] = &battery[0].cells[4];
-    cells[5] = &battery[0].cells[5];
-    total_voltage = &battery[0].total_voltage;
-    GPIO_voltage =
-        &battery[0].GPIOs[0];
-    conv_rate  = &battery[0].conv_rate;
     last_reading_time = HAL_GetTick();
 }
 
-void Data::read_temperature() {
-    auto resistance = (*GPIO_voltage * RESISTANCE_REFERENCE) /
-                      (VOLTAGE_REFERENCE - *GPIO_voltage);
+void Data::read_temperature(const float voltage, float* temperature) {
+    auto resistance =
+        (voltage * RESISTANCE_REFERENCE) / (VOLTAGE_REFERENCE - voltage);
     *temperature = (resistance - R0) / (TCR * R0);
 }
 
@@ -77,9 +61,9 @@ float Data::coulomb_counting_SOC(float current) {
     return delta_SOC;
 }
 
-float Data::ocv_battery_SOC(float c1, float c2, float c3, float c4, float c5,
-                            float c6) {
-    float total_voltage = c1 + c2 + c3 + c4 + c5 + c6;
+float Data::ocv_battery_SOC() {
+    float total_voltage = cells[0].get() + cells[1].get() + cells[2].get() +
+                          cells[3].get() + cells[4].get() + cells[5].get();
     float x =
         total_voltage - 20.0;  // to get a bigger difference between values so
                                // the polynomial is more accurate
@@ -88,23 +72,28 @@ float Data::ocv_battery_SOC(float c1, float c2, float c3, float c4, float c5,
 }
 
 void Data::update_SOC() {
-    if (first_soc_flag == true) {
-        *SOC = ocv_battery_SOC(*cells[0], *cells[1], *cells[2], *cells[3],
-                               *cells[4], *cells[5]);
+    /* if (first_soc_flag == true) {
+        SOC = ocv_battery_SOC();
         first_soc_flag = false;
     } else {
         if (std::abs(*current) < REST_THRESHOLD) {
-            *SOC += coulomb_counting_SOC(*current);
-        } else {
-            *SOC = ocv_battery_SOC(*cells[0], *cells[1], *cells[2], *cells[3],
-                                   *cells[4], *cells[5]);
-        }
-    }
+            SOC += coulomb_counting_SOC(0 - *current);
+        } else { */
+            SOC = ocv_battery_SOC();
+     /*    }
+    } */
+}
+
+void Data::get_max_min_cells() {
+    max_cell = *std::max_element(cells.begin(), cells.end());
+    min_cell = *std::min_element(cells.begin(), cells.end());
 }
 
 void Data::read() {
     bms.update();
+    get_max_min_cells();
     current_sensor->read();
     update_SOC();
-    read_temperature();
+    read_temperature(GPIO_voltage_1, &temperature_1);
+    read_temperature(GPIO_voltage_2, &temperature_2);
 }

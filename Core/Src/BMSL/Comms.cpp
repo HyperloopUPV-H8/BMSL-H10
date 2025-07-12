@@ -30,15 +30,18 @@ void Comms::init() {
 
 void Comms::add_packets(){
     battery_data = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::BATTERY),
-        Data::cells[0],
-        Data::cells[1],
-        Data::cells[2],
-        Data::cells[3],
-        Data::cells[4],
-        Data::cells[5],
-        Data::total_voltage,
-        Data::SOC,
-        Data::temperature,
+        &Data::cells[0].get(),
+        &Data::cells[1].get(),
+        &Data::cells[2].get(),
+        &Data::cells[3].get(),
+        &Data::cells[4].get(),
+        &Data::cells[5].get(),
+        &Data::min_cell,
+        &Data::max_cell,
+        &Data::total_voltage,
+        &Data::SOC,
+        &Data::temperature_1,
+        &Data::temperature_2,
         Data::current);
 
     current_state = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::STATE), BMSL::BMSL_state);
