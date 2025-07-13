@@ -89,9 +89,15 @@ void Data::get_max_min_cells() {
     min_cell = *std::min_element(cells.begin(), cells.end());
 }
 
+void Data::get_max_min_temperatures() {
+    temperature_1 = std::max(temperature_1, temperature_2);
+    temperature_2 = std::min(temperature_1, temperature_2);
+}
+
 void Data::read() {
     bms.update();
     get_max_min_cells();
+    get_max_min_temperatures();
     current_sensor->read();
     update_SOC();
     read_temperature(GPIO_voltage_1, &temperature_1);

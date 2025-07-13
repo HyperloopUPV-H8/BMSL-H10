@@ -32,6 +32,7 @@ class Data {
     static inline auto& battery = bms.get_data();
 
     static void get_max_min_cells();
+    static void get_max_min_temperatures();
 
    public:
     static inline std::array<std::reference_wrapper<float>, 6> cells{
@@ -48,6 +49,9 @@ class Data {
     static inline float temperature_1{};
     static inline float temperature_2{};
     static inline float& conv_rate{battery[0].conv_rate};
+
+    static inline float max_temp{};
+    static inline float min_temp{};
 
     static inline float SOC{50.0f};
 

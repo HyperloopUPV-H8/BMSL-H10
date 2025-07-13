@@ -42,6 +42,8 @@ void Comms::add_packets(){
         &Data::SOC,
         &Data::temperature_1,
         &Data::temperature_2,
+        &Data::min_temp,
+        &Data::max_temp,
         Data::current);
 
     current_state = new HeapPacket(static_cast<uint16_t>(Comms::IDPacket::STATE), BMSL::BMSL_state);
