@@ -32,12 +32,20 @@ void BMSL::add_protections() {
     set_protection_name(soc_protection, "SOC");
 
     Protection* temperature_1_protection = &ProtectionManager::_add_protection(
-        &Data::temperature_1, Boundary<float, OUT_OF_RANGE>{10.0f, 50.0f});
+        &Data::temperature[0], Boundary<float, OUT_OF_RANGE>{10.0f, 50.0f});
     set_protection_name(temperature_1_protection, "Temperature 1");
 
     Protection* temperature_2_protection = &ProtectionManager::_add_protection(
-        &Data::temperature_2, Boundary<float, OUT_OF_RANGE>{10.0f, 50.0f});
+        &Data::temperature[1], Boundary<float, OUT_OF_RANGE>{10.0f, 50.0f});
     set_protection_name(temperature_2_protection, "Temperature 2");
+
+    Protection* temperature_3_protection = &ProtectionManager::_add_protection(
+        &Data::temperature[2], Boundary<float, OUT_OF_RANGE>{10.0f, 50.0f});
+    set_protection_name(temperature_3_protection, "Temperature 3");
+
+    Protection* temperature_4_protection = &ProtectionManager::_add_protection(
+        &Data::temperature[3], Boundary<float, OUT_OF_RANGE>{10.0f, 50.0f});
+    set_protection_name(temperature_4_protection, "Temperature 4");
 
     Protection* bms_disconnexion_protection =
         &ProtectionManager::_add_protection(&Data::conv_rate,

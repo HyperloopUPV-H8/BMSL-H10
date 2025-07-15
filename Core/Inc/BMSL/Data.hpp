@@ -9,7 +9,7 @@
 #define CAPACITY_AH 20.0f
 #define REST_THRESHOLD 0.1f
 
-#define RESISTANCE_REFERENCE 1000.0  // Ohm
+#define RESISTANCE_REFERENCE 3900.0  // Ohm
 #define VOLTAGE_REFERENCE 3.0        // V
 #define R0 100.0                     // Ohm
 #define TCR 0.00385
@@ -46,8 +46,9 @@ class Data {
     static inline float& total_voltage{battery[0].total_voltage};
     static inline float& GPIO_voltage_1{battery[0].GPIOs[0]};
     static inline float& GPIO_voltage_2{battery[0].GPIOs[1]};
-    static inline float temperature_1{};
-    static inline float temperature_2{};
+    static inline float& GPIO_voltage_3{battery[0].GPIOs[2]};
+    static inline float& GPIO_voltage_4{battery[0].GPIOs[3]};
+    static inline std::array<float, 4> temperature{};
     static inline float& conv_rate{battery[0].conv_rate};
 
     static inline float max_temp{};

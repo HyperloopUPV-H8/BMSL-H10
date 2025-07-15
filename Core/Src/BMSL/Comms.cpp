@@ -40,8 +40,10 @@ void Comms::add_packets(){
         &Data::max_cell,
         &Data::total_voltage,
         &Data::SOC,
-        &Data::temperature_1,
-        &Data::temperature_2,
+        &Data::temperature[0],
+        &Data::temperature[1],
+        &Data::temperature[2],
+        &Data::temperature[3],
         &Data::min_temp,
         &Data::max_temp,
         Data::current);
