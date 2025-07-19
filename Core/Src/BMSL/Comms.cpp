@@ -19,7 +19,7 @@ void Comms::set_pfm_dead_time_callback() {
 
 void Comms::init() {
 
-    control_station = new ServerSocket(IPV4(BMSL_IP), CONTROL_STATION_PORT, 1000,500,10);
+    control_station = new ServerSocket(IPV4(BMSL_IP), CONTROL_STATION_PORT, 2000,1000,20);
     
 
     control_station_udp = new DatagramSocket(IPV4(BMSL_IP), CONTROL_STATION_UDP_PORT,IPV4(CONTROL_SATION_IP), CONTROL_STATION_UDP_PORT);
