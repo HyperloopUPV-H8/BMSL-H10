@@ -7,7 +7,7 @@ void BMSL::init() {
     ProtectionManager::link_state_machine(state_machine->general_sm,
                                           BMSL_SM::general_states::FAULT);
     ProtectionManager::add_standard_protections();
-    add_protections();
+    //add_protections();
     ProtectionManager::initialize();
     ProtectionManager::set_id(Boards::ID::BMSA);
 
@@ -31,7 +31,7 @@ void BMSL::add_protections() {
         &Data::SOC, Boundary<float, OUT_OF_RANGE>{24.0f, 80.0f});
     set_protection_name(soc_protection, "SOC");
 
-    Protection* temperature_1_protection = &ProtectionManager::_add_protection(
+    /* Protection* temperature_1_protection = &ProtectionManager::_add_protection(
         &Data::temperature[0], Boundary<float, OUT_OF_RANGE>{10.0f, 50.0f});
     set_protection_name(temperature_1_protection, "Temperature 1");
 
@@ -47,10 +47,10 @@ void BMSL::add_protections() {
         &Data::temperature[3], Boundary<float, OUT_OF_RANGE>{10.0f, 50.0f});
     set_protection_name(temperature_4_protection, "Temperature 4");
 
-    Protection* bms_disconnexion_protection =
+    Protection* bms_disconnection_protection =
         &ProtectionManager::_add_protection(&Data::conv_rate,
                                             Boundary<float, BELOW>{0.5f});
-    set_protection_name(bms_disconnexion_protection, "BMS Conversion Rate");
+    set_protection_name(bms_disconnection_protection, "BMS Conversion Rate"); */
 }
 
 void BMSL::update() {
